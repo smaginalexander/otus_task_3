@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserOutDTO {
 
-    private Long Code;
+    private Long code;
 
-    private String Message;
+    private String message;
 
-    private String Type;
+    private String type;
 
 }

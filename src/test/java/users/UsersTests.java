@@ -17,14 +17,14 @@ public class UsersTests {
     public void createNewUser1() {
         UserApi userApi = new UserApi();
         UserDTO user = UserDTO.builder()
-                .Email("user@otus.ru")
-                .Username("user1")
-                .UserStatus(10L)
-                .Id(1L)
-                .FirstName("first")
-                .Phone("123123-123123")
-                .LastName("last")
-                .Password("pass")
+                .email("user@otus.ru")
+                .username("user1")
+                .userStatus(10L)
+                .id(1L)
+                .firstName("first")
+                .phone("123123-123123")
+                .lastName("last")
+                .password("pass")
                 .build();
 
         ValidatableResponse response = userApi.createUser(user);
@@ -42,14 +42,14 @@ public class UsersTests {
     public void createNewUser2() {
         UserApi userApi = new UserApi();
         UserDTO user = UserDTO.builder()
-                .Email("test@test.ru")
-                .Username("user2")
-                .UserStatus(10L)
-                .Id(2L)
-                .FirstName("first")
-                .Phone("123123-123123")
-                .LastName("last")
-                .Password("pass")
+                .email("test@test.ru")
+                .username("user2")
+                .userStatus(10L)
+                .id(2L)
+                .firstName("first")
+                .phone("123123-123123")
+                .lastName("last")
+                .password("pass")
                 .build();
 
         ValidatableResponse response = userApi.createUser(user);

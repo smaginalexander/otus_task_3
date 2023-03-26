@@ -5,22 +5,21 @@ import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
+import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 
 public class UserApi {
 
-    public static final String BASE_URL = "https://petstore.swagger.io/v2";
+    public static final String BASE_URL = System.getProperty("baseUrl", "https://petstore.swagger.io/v2");
     public static final String BASE_PATH = "/user";
 
     public RequestSpecification reqSpec;
 
     public UserApi() {
-        reqSpec = given().baseUri(BASE_URL).contentType(ContentType.JSON);
+        reqSpec = given().baseUri(BASE_URL).basePath(BASE_PATH).contentType(ContentType.JSON);
     }
-
     public ValidatableResponse createUser(UserDTO user) {
-       return given(reqSpec)
-                .basePath(BASE_PATH)
+        return given(reqSpec)
                 .body(user)
                 .log().all()
                 .when()
@@ -31,9 +30,9 @@ public class UserApi {
 
     public ValidatableResponse getUser(String userName) {
         return given(reqSpec)
-                .basePath(BASE_PATH+"/"+userName)
-                .get()
+                .get("/"+userName)
                 .then()
                 .log().all();
     }
+
 }
