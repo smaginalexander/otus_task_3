@@ -12,9 +12,9 @@ import servises.UserApi;
 public class UsersTests {
 
 
-    // Создание пользователя 1 и проверка по значениям полей
     @Test
-    public void createNewUser1() {
+    public void createNewUser() {
+//      Создание пользователя
         UserApi userApi = new UserApi();
         UserDTO user = UserDTO.builder()
                 .email("user@otus.ru")
@@ -27,53 +27,35 @@ public class UsersTests {
                 .password("pass")
                 .build();
 
-        ValidatableResponse response = userApi.createUser(user);
-        UserOutDTO userOut = response.extract().body().as(UserOutDTO.class);
+        ValidatableResponse responseAfterCreateUser = userApi.createUser(user);
+        responseAfterCreateUser.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schema/createUser.json"));
+        UserOutDTO userOut = responseAfterCreateUser.extract().body().as(UserOutDTO.class);
 
-        Assertions.assertAll("Check response",
+//      Проверка ответа после создания пользователя
+        Assertions.assertAll("Check status",
                 () -> Assertions.assertEquals(200, userOut.getCode()),
                 () -> Assertions.assertEquals("unknown", userOut.getType()),
                 () -> Assertions.assertEquals("1", userOut.getMessage())
         );
-    }
 
-    //     Создание пользователя 2 и проверка по схеме
-    @Test
-    public void createNewUser2() {
-        UserApi userApi = new UserApi();
-        UserDTO user = UserDTO.builder()
-                .email("test@test.ru")
-                .username("user2")
-                .userStatus(10L)
-                .id(2L)
-                .firstName("first")
-                .phone("123123-123123")
-                .lastName("last")
-                .password("pass")
-                .build();
+//      Запрос на получение пользователя
+        ValidatableResponse responseToGetUser = userApi.getUser(user.getUsername());
+        responseToGetUser.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schema/getUser.json"));
 
-        ValidatableResponse response = userApi.createUser(user);
-        response.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schema/createUser.json"));
-    }
+        UserDTO userResponse = responseToGetUser.extract().body().as(UserDTO.class);
 
-    // получение юзера 1 проверка по значениям полей
-    @Test
-    public void getUser1() {
-        UserApi userApi = new UserApi();
-        ValidatableResponse response = userApi.getUser("user1");
-        UserDTO user = response.extract().body().as(UserDTO.class);
-
-        Assertions.assertAll("Check response",
-                () -> Assertions.assertEquals(1, user.getId()),
-                () -> Assertions.assertEquals("user1", user.getUsername())
+//      Проверка соответствия полей пользователя
+        Assertions.assertAll("Check user params",
+                () -> Assertions.assertEquals(user.getEmail(), userResponse.getEmail()),
+                () -> Assertions.assertEquals(user.getUsername(), userResponse.getUsername()),
+                () -> Assertions.assertEquals(user.getUserStatus(), userResponse.getUserStatus()),
+                () -> Assertions.assertEquals(user.getId(), userResponse.getId()),
+                () -> Assertions.assertEquals(user.getFirstName(), userResponse.getFirstName()),
+                () -> Assertions.assertEquals(user.getPhone(), userResponse.getPhone()),
+                () -> Assertions.assertEquals(user.getLastName(), userResponse.getLastName()),
+                () -> Assertions.assertEquals(user.getPassword(), userResponse.getPassword())
         );
+
     }
 
-    // Получение юзера 2 и проверка по схеме
-    @Test
-    public void getUser2() {
-        UserApi userApi = new UserApi();
-        ValidatableResponse response = userApi.getUser("user2");
-        response.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schema/getUser.json"));
-    }
 }
